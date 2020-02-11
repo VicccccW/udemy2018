@@ -8,6 +8,7 @@ Suppose that you're working in a small town administration, and you're in charge
 It's a very small town, so right now there are only 3 parks and 4 streets. 
 All parks and streets have a name and a build year.
 At an end-of-year meeting, your boss wants a final report with the following:
+
 1. Tree density of each park in the town (forumla: number of trees/park area)
 2. Average age of each town's park (forumla: sum of all ages/number of parks)
 3. The name of the park that has more than 1000 trees
@@ -19,75 +20,79 @@ HINT: Use some of the ES6 features: classes, subclasses,
 template strings, default parameters, maps, arrow functions, destructuring, etc.
 */
 
-//All parks and streets have a name and a build year.
 class TownProperty {
-    constructor (name, yearOfBuild) {
+    constructor(name, buildYear) {
         this.name = name;
-        this.yearOfBuild = yearOfBuild;
+        this.buildYear = buildYear;
     }
 }
 
-class Park extends TownProperty {
-    constructor (name, yearOfBuild, numberOfTree, area) {
-        super(name, yearOfBuild);
-        this.numberOfTree = numberOfTree;
-        this.area = area;        
+class Park extends TownProperty{
+    constructor(name, buildYear, numberOfTrees, parkArea) {
+        super(name, buildYear);
+        this.numberOfTrees = numberOfTrees;
+        this.parkArea = parkArea;
     }
 
-    treeDensityCalc() {
-        const density = this.numberOfTree / this.area;
-        console.log('${this.name} has a tree density of ${density} trees per square km.');
+    // calculateTreeDensity(numberOfTrees, parkArea) {
+    //     return numberOfTrees / parkArea;
+    // }
+    calculateTreeDensity() {
+         const density = this.numberOfTrees / this.parkArea;
+         console.log(`${this.name} has a tree density of ${density} trees per square km.`);
+     }
+
+    calcualteParkAge(buildYear) {
+        return new Date().getFullYear - buildYear;
     }
 }
 
-class Street extends TownProperty {
-    constructor (name, yearOfBuild, length, size = 3) {
-        super(name, yearOfBuild);
+class Street extends TownProperty{
+    constructor(name, buildYear, length, size = 3) {
+        super(name, buildYear);
         this.length = length;
         this.size = size;
     }
 
-    classifyStreet() {
+    classifySize() {
         const classification = new Map();
         classification.set(1, 'tiny');
         classification.set(2, 'small');
         classification.set(3, 'normal');
         classification.set(4, 'big');
         classification.set(5, 'huge');
-        console.log('${this.name} build in ${this.yearOfBuild}, is a ${classification.get(this.size)} street.');
-    }
 
+        const streetClass = classification.get(this.size);
+        console.log(`${this.name}, build in ${this.buildYear}, is a ${streetClass} street.`)
+    }
 }
 
-const parks = new Array();
-const park1 = new Park('Green Park', 1896, 2000, 500);
-const park2 = new Park('National Park', 1950, 3000, 800);
-const park3 = new Park('Oak Park', 2001, 500, 1000);
-parks.push(park1, park2, park3);
+const parks = [new Park('Green Park', 1991, 999, 0.9),
+               new Park('National Park', 2000, 500, 1.3),
+               new Park('Oak Park', 1884, 2000, 2)];
 
-const streets = new Array();
-const street1 = new Street('Ocean Avenue', 1999, 500,1);
-const street2 = new Street('Evergreen Street', 2008, 800,2);
-const street3 = new Street('4th Street', 2015, 2000,3);
-const street4 = new Street('Sunset Boulevard', 1982, 300,4);
-streets.push(street1, street2, street3, street4);
-
-//const rawData = [...parks, ...streets];
+const street = [new Street('Ocean Ave', 1992, 2000, 1),
+                new Street('Evergreen', 2002, 500, undefined),
+                new Street('4th Street', 1900, 800, 2),
+                new Street('Sunset', 2012, 1300, 4)];
 
 function reportParks(parks) {
-    // data.forEach(cur => console.log(cur.constructor === Street));
+    console.log('-----PARKS REPORT-----');
+    
+    // calculate density
+    parks.forEach(el => el.calculateTreeDensity());
+
+    // get park more than 1000
+    const parkIndex = parks.map(el => el.numberOfTrees).findIndex(el => el > 1000);
+    console.log(`${parks[parkIndex].name} has more than 1000 trees`);
 }
 
-function reportStreet(...data) {
-    // data.forEach(cur => console.log(cur.constructor === Street));
+function reportStreets(streets) {
+    console.log('-----STREET REPORT-----');
+
+    streets.forEach(el => el.classifySize());
 }
 
+reportParks(parks);
 
-
-/**
- * a map of park
- * const parks = new Map();
- * parks.set('Overview', 'Our ${} have an average of ${} years.');
- * 
- * 
- */
+reportStreets(street);
